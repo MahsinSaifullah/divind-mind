@@ -5,7 +5,7 @@ import { IUser } from '../types';
 const hashPassword = async (password: string) =>
   await bcrypt.hash(password, 10);
 
-const isPasswordValid = async (password: string, hash: string) =>
+const isPasswordMatch = async (password: string, hash: string) =>
   await bcrypt.compare(password, hash);
 
 const encodeJWT = (userData: Omit<IUser, 'password'>) =>
@@ -21,7 +21,7 @@ const decodeJWT = (token: string) => {
 
 export const authService = {
   hashPassword,
-  isPasswordValid,
+  isPasswordMatch,
   encodeJWT,
   decodeJWT,
 };
