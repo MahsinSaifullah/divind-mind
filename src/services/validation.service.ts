@@ -1,6 +1,6 @@
 import { IUser } from 'types';
 
-const validateRegisterRequestBody = (requestBody: IUser) => {
+const validateAuthRequestBody = (requestBody: IUser) => {
   const { username, password, type, code } = requestBody;
 
   if (!username) throw new Error('Username is required');
@@ -17,5 +17,5 @@ const validateRegisterRequestBody = (requestBody: IUser) => {
 };
 
 export const validationService = {
-  validateRegisterRequestBody,
+  validateAuthRequestBody,
 };

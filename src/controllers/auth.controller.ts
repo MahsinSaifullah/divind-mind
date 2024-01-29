@@ -5,9 +5,9 @@ import { gameConfig } from '../configs';
 
 const register = async (req: Request, res: Response) => {
   try {
-    validationService.validateRegisterRequestBody(req.body);
+    validationService.validateAuthRequestBody(req.body);
 
-    if (!(await userService.isUsernameUnique(req.body.username))) {
+    if (req.body.type === 'creator' && !(await userService.isUsernameUnique(req.body.username))) {
       throw new Error('Username must be unique');
     }
 
@@ -20,26 +20,37 @@ const register = async (req: Request, res: Response) => {
   }
 
   try {
-    let newUserToCreate: IUser = req.body
+    let createdUser;
 
-    if(req.body.type === 'creator'){
+    // create user if its a creator 
+    if(req.body.type === 'creator' ){
       const hashPassword = await authService.hashPassword(req.body.password);
-      newUserToCreate = {
+      createdUser = await userService.createUser({
         ...req.body,
         password: hashPassword,
-      }
+      })
     }
 
+    // create user if its a unique player 
+    if(req.body.type === 'player' && await userService.isUsernameUnique(req.body.username)){
+      createdUser = await userService.createUser(req.body)
+    }
 
-    const newUser = await userService.createUser(newUserToCreate);
+    // get user if player already exist
+    if(req.body.type === 'player' && !(await userService.isUsernameUnique(req.body.username))) {
+      createdUser = await userService.getUserByUsername(req.body.username)
+    }
+
+    if(!createdUser){
+      throw new Error('Unable to register user due to database issue')
+    }
 
     const userDTO: IUser = {
-      id: newUser._id as unknown as string, 
-      username: newUser.username, 
-      code: newUser.code,
-      type: newUser.type
+      id: createdUser._id as unknown as string, 
+      username: createdUser.username, 
+      code: createdUser.code,
+      type: createdUser.type
     }
-
 
     const token = await authService.encodeJWT(userDTO);
 
