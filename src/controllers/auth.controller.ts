@@ -64,6 +64,49 @@ const register = async (req: Request, res: Response) => {
   }
 };
 
+const login = async (req: Request, res: Response) => {
+
+  if(req.body.type === 'player'){
+    return res.status(403).json({error: 'Players cannot access this route', status: 403})
+  }
+
+  try {
+    validationService.validateAuthRequestBody(req.body);
+  } catch (error: any) {
+    console.log(error.message)
+    return res.status(400).json({error: error.message, status: 400});
+  }
+
+  try {
+    const user = await userService.getUserByUsername(req.body.username)
+
+    if(!user){
+      return res.status(400).json({error: 'User with that username does not exist', status: 400})
+    }
+
+    if(!(await authService.isPasswordMatch(req.body.password, user.password as string))){
+      return res.status(400).json({error: 'Invalid Password', status: 400})
+    }
+
+    const userDTO: IUser = {
+      id: user._id as unknown as string, 
+      username: user.username, 
+      type: user.type
+    }
+
+    const token = await authService.encodeJWT(userDTO);
+
+    return res.status(200).json({ 
+      user: userDTO, 
+      token 
+    });
+  } catch (error: any) {
+    console.log(error.message)
+    return res.status(500).json({error: 'Unable to login user due to a server issue', status: 500});
+  }
+};
+
 export const authController = {
   register,
+  login
 };
