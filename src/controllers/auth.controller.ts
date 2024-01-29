@@ -15,8 +15,8 @@ const register = async (req: Request, res: Response) => {
       throw new Error('Players limit reached for that code');
     }
   } catch (error: any) {
-    res.sendStatus(400).json(error.message);
     console.log(error.message)
+    return res.status(400).json({error: error.message, status: 400});
   }
 
   try {
@@ -30,14 +30,26 @@ const register = async (req: Request, res: Response) => {
       }
     }
 
+
     const newUser = await userService.createUser(newUserToCreate);
 
-    const token = await authService.encodeJWT(newUser);
+    const userDTO: IUser = {
+      id: newUser._id as unknown as string, 
+      username: newUser.username, 
+      code: newUser.code,
+      type: newUser.type
+    }
 
-    res.sendStatus(201).json({ user: newUser, token });
+
+    const token = await authService.encodeJWT(userDTO);
+
+    return res.status(201).json({ 
+      user: userDTO, 
+      token 
+    });
   } catch (error: any) {
-    res.sendStatus(500).json('Unable to register user due to a server issue');
     console.log(error.message)
+    return res.status(500).json({error: 'Unable to register user due to a server issue', status: 500});
   }
 };
 
