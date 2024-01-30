@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { gameService, validationService } from 'services';
+import { gameService, validationService } from '../services';
 import { IGame, IQuiz } from 'types';
 
 const createNewGame = async (req: Request, res: Response) => {
@@ -16,7 +16,7 @@ const createNewGame = async (req: Request, res: Response) => {
   }
 
   try {
-    const newGame = await gameService.createGame(req.body);
+    const newGame = await gameService.createGame({...req.body, creatorId: req.user!.id});
 
     const newGameDTO: IGame = {
       id: newGame._id as unknown as string,

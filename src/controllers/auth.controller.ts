@@ -5,7 +5,7 @@ import {
   gameService,
   userService,
   validationService,
-} from 'services';
+} from '../services';
 import { IUser, IUserType } from 'types';
 import { gameConfig } from 'configs';
 

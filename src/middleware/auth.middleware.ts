@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { IUser, IUserType } from 'types';
-import { authService } from 'services';
+import { authService } from '../services';
 
 export const auth =
   (type?: IUserType) => (req: Request, res: Response, next: NextFunction) => {
