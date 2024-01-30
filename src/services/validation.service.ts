@@ -17,9 +17,7 @@ const validateAuthRequestBody = (requestBody: IUser) => {
 };
 
 const validateGameRequestBody = (requestBody: IGame) => {
-  const { creatorId, code } = requestBody;
-
-  if (!creatorId) throw new Error('Creator Id is required');
+  const { code } = requestBody;
 
   if (!code) throw new Error('Code is required');
 
