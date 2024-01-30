@@ -3,7 +3,7 @@ import { IUser, IUserType } from '../types';
 import { authService } from 'services';
 
 export const authMiddleware =
-  (type: IUserType) => (req: Request, res: Response, next: NextFunction) => {
+  (type?: IUserType) => (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -21,7 +21,7 @@ export const authMiddleware =
         .json({ error: 'Unauthorized, invalid token', status: 401 });
     }
 
-    if (user.type !== type) {
+    if (type && user.type !== type) {
       return res.status(401).json({
         error: `${
           type === 'player' ? 'Players' : 'Creators'
@@ -30,6 +30,6 @@ export const authMiddleware =
       });
     }
 
-    req.user = user
-    next()
+    req.user = user;
+    next();
   };
