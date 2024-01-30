@@ -17,7 +17,7 @@ export interface IQuiz {
 export interface IGame {
   id: string;
   code: string;
-  createrId: string;
+  creatorId: string;
   players: string[];
   maxPlayerLimit: number;
   quizes: IQuiz[];

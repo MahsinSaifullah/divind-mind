@@ -1,4 +1,4 @@
-import { IUser } from 'types';
+import { IGame, IUser } from '../types';
 
 const validateAuthRequestBody = (requestBody: IUser) => {
   const { username, password, type, code } = requestBody;
@@ -16,6 +16,17 @@ const validateAuthRequestBody = (requestBody: IUser) => {
   return true;
 };
 
+const validateGameRequestBody = (requestBody: IGame) => {
+  const { creatorId, code } = requestBody;
+
+  if (!creatorId) throw new Error('Creator Id is required');
+
+  if (!code) throw new Error('Code is required');
+
+  return true;
+};
+
 export const validationService = {
   validateAuthRequestBody,
+  validateGameRequestBody
 };
