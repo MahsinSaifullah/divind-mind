@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-import { IUser } from 'types';
-import { environmentConfig } from 'configs';
+import { IUser } from '../types';
+import { environmentConfig } from '../configs';
 
 const hashPassword = async (password: string) =>
   await bcrypt.hash(password, 10);

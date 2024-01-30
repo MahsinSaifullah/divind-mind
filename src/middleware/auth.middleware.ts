@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { IUser, IUserType } from 'types';
+import { IUser, IUserType } from '../types';
 import { authService } from '../services';
 
 export const auth =

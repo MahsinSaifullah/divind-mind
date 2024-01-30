@@ -1,5 +1,5 @@
-import { gameModel } from 'models';
-import { IGame, IQuiz } from 'types';
+import { gameModel } from '../models';
+import { IGame, IQuiz } from '../types';
 
 const createGame = async (gameData: IGame) => await gameModel.create(gameData);
 

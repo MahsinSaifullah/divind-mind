@@ -6,8 +6,8 @@ import {
   userService,
   validationService,
 } from '../services';
-import { IUser, IUserType } from 'types';
-import { gameConfig } from 'configs';
+import { IUser, IUserType } from '../types';
+import { gameConfig } from '../configs';
 
 const register = async (req: Request, res: Response) => {
   const userType: IUserType = req.body.type;
