@@ -7,6 +7,14 @@ const getGameById = async (id: string) => await gameModel.findById(id);
 
 const getGameByCode = async (code: string) => await gameModel.findOne({ code });
 
+const isGameCodeUnique = async (code: string) => {
+  const foundGame = await getGameByCode(code);
+
+  if (!foundGame) return true;
+
+  return false;
+}
+
 const hasGameWithCodeReachedLimit = async (code: string) => {
   const foundGame = await getGameByCode(code);
 
@@ -38,6 +46,7 @@ export const gameService = {
   createGame,
   getGameById,
   getGameByCode,
+  isGameCodeUnique,
   hasGameWithCodeReachedLimit,
   updateGame,
   addPlayerToGameWithCode,
