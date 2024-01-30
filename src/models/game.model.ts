@@ -1,5 +1,6 @@
-import { gameConfig } from '../configs';
 import mongoose from 'mongoose';
+
+import { gameConfig } from 'configs';
 
 const answerSchema = new mongoose.Schema({
   answer: { type: String, required: true },

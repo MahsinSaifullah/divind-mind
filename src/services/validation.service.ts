@@ -1,4 +1,4 @@
-import { IGame, IUser } from '../types';
+import { IGame, IUser } from 'types';
 
 const validateAuthRequestBody = (requestBody: IUser) => {
   const { username, password, type, code } = requestBody;

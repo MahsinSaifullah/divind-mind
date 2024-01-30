@@ -1,12 +1,13 @@
 import { Request, Response } from 'express';
+
 import {
   authService,
   gameService,
   userService,
   validationService,
-} from '../services';
+} from 'services';
 import { IUser, IUserType } from 'types';
-import { gameConfig } from '../configs';
+import { gameConfig } from 'configs';
 
 const register = async (req: Request, res: Response) => {
   const userType: IUserType = req.body.type;
