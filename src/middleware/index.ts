@@ -1,1 +1,5 @@
-export * from './auth.middleware'
+import { auth } from './auth.middleware';
+
+export const middleware = {
+  auth,
+};

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { IUser, IUserType } from '../types';
 import { authService } from 'services';
 
-export const authMiddleware =
+export const auth =
   (type?: IUserType) => (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
