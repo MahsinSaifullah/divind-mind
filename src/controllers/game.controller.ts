@@ -58,8 +58,9 @@ const getAllGamesForUser = async (req: Request, res: Response) => {
       quizes: game.quizes as unknown as IQuiz[],
     }));
 
-    res.send(200).json(gameDTOs)
-  } catch (error) {
+    res.send(200).json(gameDTOs);
+  } catch (error: any) {
+    console.log(error.message);
     return res.status(500).json({
       error: 'Unable to fetch games due to a server issue',
       status: 500,
@@ -67,7 +68,45 @@ const getAllGamesForUser = async (req: Request, res: Response) => {
   }
 };
 
+const addQuizToGame = async (req: Request, res: Response) => {
+  try {
+    if (!(await gameService.getGameById(req.params.id))) {
+      return res.status(404).json({
+        error: 'There is no game with that id',
+        status: 404,
+      });
+    }
+
+    const gameWithNewQuiz = await gameService.addQuizToGame(
+      req.params.id,
+      req.body
+    );
+
+    if (!gameWithNewQuiz) {
+      throw new Error('Failed to add quize');
+    }
+
+    const gameDTO: IGame = {
+      id: gameWithNewQuiz._id as unknown as string,
+      code: gameWithNewQuiz.code,
+      creatorId: gameWithNewQuiz.creatorId as unknown as string,
+      players: gameWithNewQuiz.players as unknown as string[],
+      maxPlayerLimit: gameWithNewQuiz.maxPlayerLimit,
+      quizes: gameWithNewQuiz.quizes as unknown as IQuiz[],
+    };
+
+    return res.status(201).json(gameDTO);
+  } catch (error: any) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: 'Unable to add quiz to the game due to a server issue',
+      status: 500,
+    });
+  }
+};
+
 export const gameController = {
   createNewGame,
-  getAllGamesForUser
+  getAllGamesForUser,
+  addQuizToGame,
 };

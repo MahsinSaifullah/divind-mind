@@ -36,9 +36,9 @@ const addPlayerToGameWithCode = async (code: string, playerId: string) =>
     { new: true }
   );
 
-const addQuizToGameWithCode = async (code: string, quiz: IQuiz) =>
-  await gameModel.findOneAndUpdate(
-    { code },
+const addQuizToGame = async (id: string, quiz: IQuiz) =>
+  await gameModel.findByIdAndUpdate(
+    id,
     { $push: { quizes: quiz } },
     { new: true }
   );
@@ -54,6 +54,6 @@ export const gameService = {
   hasGameWithCodeReachedLimit,
   updateGame,
   addPlayerToGameWithCode,
-  addQuizToGameWithCode,
+  addQuizToGame,
   deleteGame,
 };
