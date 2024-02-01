@@ -34,7 +34,7 @@ const createNewGame = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.log(error.message);
     return res.status(500).json({
-      error: 'Unable to create game due to a server issue',
+      error: 'Failed to create game due to a server issue',
       status: 500,
     });
   }
@@ -62,7 +62,7 @@ const getAllGamesForUser = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.log(error.message);
     return res.status(500).json({
-      error: 'Unable to fetch games due to a server issue',
+      error: 'Failed to fetch games due to a server issue',
       status: 500,
     });
   }
@@ -99,7 +99,7 @@ const addQuizToGame = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.log(error.message);
     return res.status(500).json({
-      error: 'Unable to add quiz to the game due to a server issue',
+      error: 'Failed to add quiz to the game due to a server issue',
       status: 500,
     });
   }
@@ -134,7 +134,7 @@ const addPlayerToGameWithCode = async (req: Request, res: Response) => {
   } catch (error: any) {
     console.log(error.message);
     return res.status(500).json({
-      error: 'Unable to add player to the game due to a server issue',
+      error: 'Failed to add player to the game due to a server issue',
       status: 500,
     });
   }
@@ -167,7 +167,33 @@ const getAllPlayersOfGame = async (req: Request, res: Response) => {
     res.send(200).json({ players });
   } catch (error) {
     return res.status(500).json({
-      error: 'Unable to get players of the game due to a server issue',
+      error: 'Failed to get players of the game due to a server issue',
+      status: 500,
+    });
+  }
+};
+
+const updateGame = async (req: Request, res: Response) => {
+  try {
+    const updatedGame = await gameService.updateGame(req.params.id, req.body);
+
+    if (!updatedGame) {
+      throw new Error('Failed to update game');
+    }
+
+    const gameDTO: IGame = {
+      id: updatedGame._id as unknown as string,
+      code: updatedGame.code,
+      creatorId: updatedGame.creatorId as unknown as string,
+      players: updatedGame.players as unknown as string[],
+      maxPlayerLimit: updatedGame.maxPlayerLimit,
+      quizes: updatedGame.quizes as unknown as IQuiz[],
+    };
+
+    res.send(200).json(gameDTO);
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Failed to update game due to a server issue',
       status: 500,
     });
   }
@@ -179,4 +205,5 @@ export const gameController = {
   getAllPlayersOfGame,
   addQuizToGame,
   addPlayerToGameWithCode,
+  updateGame
 };
