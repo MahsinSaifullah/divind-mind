@@ -105,7 +105,6 @@ const addQuizToGame = async (req: Request, res: Response) => {
   }
 };
 
-
 const getAllPlayersOfGame = async (req: Request, res: Response) => {
   try {
     const playerIds = await gameService.getAllPlayersWithGameId(
@@ -167,7 +166,21 @@ const updateGame = async (req: Request, res: Response) => {
 
 const deleteGame = async (req: Request, res: Response) => {
   try {
+    const gameToDelete = await gameService.getGameById(req.params.id);
+
+    if (!gameToDelete) {
+      return res.status(404).json({
+        error: 'Game not found',
+        status: 404,
+      });
+    }
+
+    for (const playerId of gameToDelete.players) {
+      await userService.deleteUser(playerId as unknown as string);
+    }
+
     await gameService.deleteGame(req.params.id);
+
     return res.sendStatus(204);
   } catch (error) {
     return res.status(500).json({
