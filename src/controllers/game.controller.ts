@@ -58,7 +58,7 @@ const getAllGamesForUser = async (req: Request, res: Response) => {
       quizes: game.quizes as unknown as IQuiz[],
     }));
 
-    res.send(200).json(gameDTOs);
+    res.status(200).json({ games: gameDTOs });
   } catch (error: any) {
     console.log(error.message);
     return res.status(500).json({
@@ -205,5 +205,5 @@ export const gameController = {
   getAllPlayersOfGame,
   addQuizToGame,
   addPlayerToGameWithCode,
-  updateGame
+  updateGame,
 };
