@@ -15,10 +15,7 @@ const register = async (req: Request, res: Response) => {
   try {
     validationService.validateAuthRequestBody(req.body);
 
-    if (
-      userType === 'creator' &&
-      !(await userService.isUsernameUnique(req.body.username))
-    ) {
+    if (!(await userService.isUsernameUnique(req.body.username))) {
       throw new Error('Username must be unique');
     }
 
@@ -45,32 +42,17 @@ const register = async (req: Request, res: Response) => {
   }
 
   try {
-    let createdUser;
-
-    // create user if its a creator
+    let requestBody = req.body;
+    
     if (userType === 'creator') {
       const hashPassword = await authService.hashPassword(req.body.password);
-      createdUser = await userService.createUser({
+       requestBody = {
         ...req.body,
         password: hashPassword,
-      });
+      };
     }
 
-    // create user if its a unique player
-    if (
-      userType === 'player' &&
-      (await userService.isUsernameUnique(req.body.username))
-    ) {
-      createdUser = await userService.createUser(req.body);
-    }
-
-    // get user if player already exist
-    if (
-      userType === 'player' &&
-      !(await userService.isUsernameUnique(req.body.username))
-    ) {
-      createdUser = await userService.getUserByUsername(req.body.username);
-    }
+    const createdUser = await userService.createUser(requestBody);
 
     if (!createdUser) {
       throw new Error('Unable to register user due to database issue');
@@ -82,6 +64,13 @@ const register = async (req: Request, res: Response) => {
       code: createdUser.code,
       type: createdUser.type,
     };
+
+    if (userType === 'player') {
+      await gameService.addPlayerToGameWithCode(
+        userDTO.code as string,
+        userDTO.id
+      );
+    }
 
     const token = await authService.encodeJWT(userDTO);
 
