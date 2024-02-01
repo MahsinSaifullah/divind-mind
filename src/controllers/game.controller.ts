@@ -16,7 +16,10 @@ const createNewGame = async (req: Request, res: Response) => {
   }
 
   try {
-    const newGame = await gameService.createGame({...req.body, creatorId: req.user!.id});
+    const newGame = await gameService.createGame({
+      ...req.body,
+      creatorId: req.user!.id,
+    });
 
     const newGameDTO: IGame = {
       id: newGame._id as unknown as string,
@@ -37,6 +40,34 @@ const createNewGame = async (req: Request, res: Response) => {
   }
 };
 
+const getAllGamesForUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(403).json({ error: 'User does not exist' });
+    }
+
+    const gamesByUser = await gameService.getAllGamesByCreatorId(userId);
+    const gameDTOs: IGame[] = gamesByUser.map((game) => ({
+      id: game._id as unknown as string,
+      code: game.code,
+      creatorId: game.creatorId as unknown as string,
+      players: game.players as unknown as string[],
+      maxPlayerLimit: game.maxPlayerLimit,
+      quizes: game.quizes as unknown as IQuiz[],
+    }));
+
+    res.send(200).json(gameDTOs)
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Unable to fetch games due to a server issue',
+      status: 500,
+    });
+  }
+};
+
 export const gameController = {
   createNewGame,
+  getAllGamesForUser
 };
