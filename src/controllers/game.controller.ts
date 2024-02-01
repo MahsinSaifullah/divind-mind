@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Request, Response } from 'express';
 
 import { gameService, userService, validationService } from '../services';
@@ -77,10 +78,10 @@ const addQuizToGame = async (req: Request, res: Response) => {
       });
     }
 
-    const gameWithNewQuiz = await gameService.addQuizToGame(
-      req.params.id,
-      req.body
-    );
+    const gameWithNewQuiz = await gameService.addQuizToGame(req.params.id, {
+      ...req.body,
+      id: new mongoose.Types.ObjectId(),
+    });
 
     if (!gameWithNewQuiz) {
       throw new Error('Failed to add quiz');
@@ -104,7 +105,6 @@ const addQuizToGame = async (req: Request, res: Response) => {
     });
   }
 };
-
 
 const getAllPlayersOfGame = async (req: Request, res: Response) => {
   try {
