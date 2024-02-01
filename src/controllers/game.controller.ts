@@ -165,10 +165,23 @@ const updateGame = async (req: Request, res: Response) => {
   }
 };
 
+const deleteGame = async (req: Request, res: Response) => {
+  try {
+    await gameService.deleteGame(req.params.id);
+    return res.sendStatus(204);
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Failed to update game due to a server issue',
+      status: 500,
+    });
+  }
+};
+
 export const gameController = {
   createNewGame,
   getAllGamesForUser,
   getAllPlayersOfGame,
   addQuizToGame,
   updateGame,
+  deleteGame,
 };
