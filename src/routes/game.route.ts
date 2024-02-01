@@ -10,7 +10,6 @@ gameRouter.get('/:id/player', middleware.auth('creator'), gameController.getAllP
 
 gameRouter.post('/', middleware.auth('creator'), gameController.createNewGame);
 gameRouter.post('/:id/quiz', middleware.auth('creator'), gameController.addQuizToGame);
-gameRouter.post('/:id/player', middleware.auth('player'), gameController.addPlayerToGameWithCode);
 
 gameRouter.patch('/:id', middleware.auth('creator'), gameController.updateGame)
 

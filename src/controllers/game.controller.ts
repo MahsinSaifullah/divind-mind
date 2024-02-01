@@ -105,40 +105,6 @@ const addQuizToGame = async (req: Request, res: Response) => {
   }
 };
 
-const addPlayerToGameWithCode = async (req: Request, res: Response) => {
-  try {
-    validationService.validateAddPlayerRequestBody(req.body);
-  } catch (error: any) {
-    console.log(error.message);
-    return res.status(400).json({ error: error.message, status: 400 });
-  }
-
-  try {
-    if (!(await gameService.getGameById(req.params.id))) {
-      return res.status(404).json({
-        error: 'There is no game with that id',
-        status: 404,
-      });
-    }
-
-    if (!(await gameService.getGameByCode(req.body.code))) {
-      return res.status(404).json({
-        error: 'There is no game with that code',
-        status: 404,
-      });
-    }
-
-    await gameService.addPlayerToGameWithCode(req.body.code, req.user!.id);
-
-    return res.status(204);
-  } catch (error: any) {
-    console.log(error.message);
-    return res.status(500).json({
-      error: 'Failed to add player to the game due to a server issue',
-      status: 500,
-    });
-  }
-};
 
 const getAllPlayersOfGame = async (req: Request, res: Response) => {
   try {
@@ -204,6 +170,5 @@ export const gameController = {
   getAllGamesForUser,
   getAllPlayersOfGame,
   addQuizToGame,
-  addPlayerToGameWithCode,
   updateGame,
 };
