@@ -24,7 +24,16 @@ const validateGameRequestBody = (requestBody: IGame) => {
   return true;
 };
 
+const validateAddPlayerRequestBody = (requestBody: { code: string}) => {
+  const { code } = requestBody;
+
+  if (!code) throw new Error('Code is required');
+
+  return true;
+};
+
 export const validationService = {
   validateAuthRequestBody,
-  validateGameRequestBody
+  validateGameRequestBody,
+  validateAddPlayerRequestBody
 };
