@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
-import { gameService, validationService } from '../services';
-import { IGame, IQuiz } from '../types';
+import { gameService, userService, validationService } from '../services';
+import { IGame, IQuiz, IUser } from '../types';
 
 const createNewGame = async (req: Request, res: Response) => {
   try {
@@ -131,9 +131,43 @@ const addPlayerToGameWithCode = async (req: Request, res: Response) => {
     await gameService.addPlayerToGameWithCode(req.body.code, req.user!.id);
 
     return res.status(204);
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error.message);
     return res.status(500).json({
       error: 'Unable to add player to the game due to a server issue',
+      status: 500,
+    });
+  }
+};
+
+const getAllPlayersOfGame = async (req: Request, res: Response) => {
+  try {
+    const playerIds = await gameService.getAllPlayersWithGameId(
+      req.params.id as string
+    );
+
+    let players: IUser[] = [];
+
+    for (const id of playerIds) {
+      const player = await userService.getUserById(id as unknown as string);
+
+      if (!player) {
+        continue;
+      }
+
+      const playerDTO: IUser = {
+        id: player._id as unknown as string,
+        username: player.username,
+        type: player.type,
+      };
+
+      players.push(playerDTO);
+    }
+
+    res.send(200).json({ players });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Unable to get players of the game due to a server issue',
       status: 500,
     });
   }
@@ -142,6 +176,7 @@ const addPlayerToGameWithCode = async (req: Request, res: Response) => {
 export const gameController = {
   createNewGame,
   getAllGamesForUser,
+  getAllPlayersOfGame,
   addQuizToGame,
   addPlayerToGameWithCode,
 };
