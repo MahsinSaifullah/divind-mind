@@ -130,7 +130,7 @@ const getAllPlayersOfGame = async (req: Request, res: Response) => {
       players.push(playerDTO);
     }
 
-    res.send(200).json({ players });
+    res.status(200).json({ players });
   } catch (error) {
     return res.status(500).json({
       error: 'Failed to get players of the game due to a server issue',
@@ -156,7 +156,7 @@ const updateGame = async (req: Request, res: Response) => {
       quizes: updatedGame.quizes as unknown as IQuiz[],
     };
 
-    res.send(200).json(gameDTO);
+    res.status(200).json(gameDTO);
   } catch (error) {
     return res.status(500).json({
       error: 'Failed to update game due to a server issue',
