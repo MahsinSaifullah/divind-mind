@@ -140,6 +140,29 @@ const getAllPlayersOfGame = async (req: Request, res: Response) => {
 
 const updateGame = async (req: Request, res: Response) => {
   try {
+    const { code, maxPlayerLimit } = req.body;
+    const gameTobeUpdated = await gameService.getGameById(req.params.id);
+
+    if (!gameTobeUpdated) {
+      return res.status(404).json({
+        error: 'Game not found',
+        status: 404,
+      });
+    }
+
+    if (code && gameTobeUpdated.players.length) {
+      for (const playerId of gameTobeUpdated.players) {
+        await userService.updatePlayerCode(playerId as unknown as string, code);
+      }
+    }
+
+    if (maxPlayerLimit < gameTobeUpdated.players.length) {
+      return res.status(400).json({
+        error: `This game already has ${gameTobeUpdated.players.length} players. Max limit cannot be less than that`,
+        status: 400,
+      });
+    }
+
     const updatedGame = await gameService.updateGame(req.params.id, req.body);
 
     if (!updatedGame) {
@@ -155,7 +178,7 @@ const updateGame = async (req: Request, res: Response) => {
       quizes: updatedGame.quizes as unknown as IQuiz[],
     };
 
-    res.status(200).json(gameDTO);
+    return res.status(200).json(gameDTO);
   } catch (error) {
     return res.status(500).json({
       error: 'Failed to update game due to a server issue',

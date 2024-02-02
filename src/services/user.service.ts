@@ -20,6 +20,8 @@ const getAllUsersByCode = async (code: string) =>
 const getNumberOfUsersWithCode = async (code: string) =>
   await userModel.countDocuments({ code });
 
+const updatePlayerCode = async (id: string, code: string) => await userModel.findByIdAndUpdate(id, { code })
+
 const deleteUser = async (id: string) => await userModel.findByIdAndDelete(id);
 
 export const userService = {
@@ -29,5 +31,6 @@ export const userService = {
   isUsernameUnique,
   getAllUsersByCode,
   getNumberOfUsersWithCode,
+  updatePlayerCode,
   deleteUser,
 };
