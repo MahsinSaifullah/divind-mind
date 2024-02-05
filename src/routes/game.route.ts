@@ -12,6 +12,7 @@ gameRouter.post('/:id/quiz', middleware.auth('creator'), gameController.addQuizT
 gameRouter.patch('/:id', middleware.auth('creator'), gameController.updateGame)
 gameRouter.patch('/:id/quiz/:quizId', middleware.auth('creator'), gameController.updateQuiz);
 gameRouter.delete('/:id', middleware.auth('creator'), gameController.deleteGame)
+gameRouter.delete('/:id/quiz/:quizId', middleware.auth('creator'), gameController.deleteQuizFromGame)
 
 
 export { gameRouter };

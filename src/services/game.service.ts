@@ -58,13 +58,22 @@ const updateQuiz = async (gameId: string, quizId: string, updatedQuiz: IQuiz) =>
       $set: {
         'quizes.$._id': quizId,
         ...(updatedQuiz.title && { 'quizes.$.title': updatedQuiz.title }),
-        ...(updatedQuiz.questions && { 'quizes.$.questions': updatedQuiz.questions }),
+        ...(updatedQuiz.questions && {
+          'quizes.$.questions': updatedQuiz.questions,
+        }),
       },
     },
     { new: true }
   );
 
 const deleteGame = async (id: string) => await gameModel.findByIdAndDelete(id);
+
+const removeQuizFromGame = async (id: string, quizId: string) =>
+  await gameModel.findByIdAndUpdate(
+    id,
+    { $pull: { quizes: { _id: quizId } } },
+    { new: true }
+  );
 
 export const gameService = {
   createGame,
@@ -79,4 +88,5 @@ export const gameService = {
   addQuizToGame,
   updateQuiz,
   deleteGame,
+  removeQuizFromGame,
 };

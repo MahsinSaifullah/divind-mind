@@ -133,7 +133,7 @@ const updateGame = async (req: Request, res: Response) => {
       });
     }
 
-    if(quizes) {
+    if (quizes) {
       return res.status(400).json({
         error: 'Cannot update quiz with this endpoint',
         status: 400,
@@ -175,7 +175,7 @@ const updateQuiz = async (req: Request, res: Response) => {
 
     return res.status(200).json(gameDTO(updatedGame));
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json({
       error: 'Failed to update game due to a server issue',
       status: 500,
@@ -209,6 +209,28 @@ const deleteGame = async (req: Request, res: Response) => {
   }
 };
 
+const deleteQuizFromGame = async (req: Request, res: Response) => {
+  try {
+    const gameToDelete = await gameService.getGameById(req.params.id);
+
+    if (!gameToDelete) {
+      return res.status(404).json({
+        error: 'Game not found',
+        status: 404,
+      });
+    }
+
+    await gameService.removeQuizFromGame(req.params.id, req.params.quizId);
+
+    return res.sendStatus(204);
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Failed to update game due to a server issue',
+      status: 500,
+    });
+  }
+};
+
 export const gameController = {
   createNewGame,
   getAllGamesForUser,
@@ -217,4 +239,5 @@ export const gameController = {
   updateGame,
   updateQuiz,
   deleteGame,
+  deleteQuizFromGame,
 };
