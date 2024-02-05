@@ -147,7 +147,8 @@ const updateGame = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json(gameDTO(updatedGame));
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error);
     return res.status(500).json({
       error: 'Failed to update game due to a server issue',
       status: 500,
@@ -174,7 +175,7 @@ const updateQuiz = async (req: Request, res: Response) => {
     }
 
     return res.status(200).json(gameDTO(updatedGame));
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     return res.status(500).json({
       error: 'Failed to update game due to a server issue',
@@ -201,7 +202,8 @@ const deleteGame = async (req: Request, res: Response) => {
     await gameService.deleteGame(req.params.id);
 
     return res.sendStatus(204);
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error);
     return res.status(500).json({
       error: 'Failed to update game due to a server issue',
       status: 500,
@@ -223,7 +225,8 @@ const deleteQuizFromGame = async (req: Request, res: Response) => {
     await gameService.removeQuizFromGame(req.params.id, req.params.quizId);
 
     return res.sendStatus(204);
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error);
     return res.status(500).json({
       error: 'Failed to update game due to a server issue',
       status: 500,
