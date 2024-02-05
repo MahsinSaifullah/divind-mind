@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 
 import { gameService, userService, validationService } from '../services';
-import { IGame, IQuiz, IUser } from '../types';
+import { IGame, IUser } from '../types';
+import { gameDTO, userDTO } from '../dtos';
 
 const createNewGame = async (req: Request, res: Response) => {
   try {
@@ -21,16 +22,7 @@ const createNewGame = async (req: Request, res: Response) => {
       creatorId: req.user!.id,
     });
 
-    const newGameDTO: IGame = {
-      id: newGame._id as unknown as string,
-      code: newGame.code,
-      creatorId: newGame.creatorId as unknown as string,
-      players: newGame.players as unknown as string[],
-      maxPlayerLimit: newGame.maxPlayerLimit,
-      quizes: newGame.quizes as unknown as IQuiz[],
-    };
-
-    res.status(201).json(newGameDTO);
+    res.status(201).json(gameDTO(newGame));
   } catch (error: any) {
     console.log(error.message);
     return res.status(500).json({
@@ -49,14 +41,7 @@ const getAllGamesForUser = async (req: Request, res: Response) => {
     }
 
     const gamesByUser = await gameService.getAllGamesByCreatorId(userId);
-    const gameDTOs: IGame[] = gamesByUser.map((game) => ({
-      id: game._id as unknown as string,
-      code: game.code,
-      creatorId: game.creatorId as unknown as string,
-      players: game.players as unknown as string[],
-      maxPlayerLimit: game.maxPlayerLimit,
-      quizes: game.quizes as unknown as IQuiz[],
-    }));
+    const gameDTOs: IGame[] = gamesByUser.map((game) => gameDTO(game));
 
     res.status(200).json({ games: gameDTOs });
   } catch (error: any) {
@@ -86,16 +71,7 @@ const addQuizToGame = async (req: Request, res: Response) => {
       throw new Error('Failed to add quiz');
     }
 
-    const gameDTO: IGame = {
-      id: gameWithNewQuiz._id as unknown as string,
-      code: gameWithNewQuiz.code,
-      creatorId: gameWithNewQuiz.creatorId as unknown as string,
-      players: gameWithNewQuiz.players as unknown as string[],
-      maxPlayerLimit: gameWithNewQuiz.maxPlayerLimit,
-      quizes: gameWithNewQuiz.quizes as unknown as IQuiz[],
-    };
-
-    return res.status(200).json(gameDTO);
+    return res.status(200).json(gameDTO(gameWithNewQuiz));
   } catch (error: any) {
     console.log(error.message);
     return res.status(500).json({
@@ -120,13 +96,7 @@ const getAllPlayersOfGame = async (req: Request, res: Response) => {
         continue;
       }
 
-      const playerDTO: IUser = {
-        id: player._id as unknown as string,
-        username: player.username,
-        type: player.type,
-      };
-
-      players.push(playerDTO);
+      players.push(userDTO(player));
     }
 
     res.status(200).json({ players });
@@ -169,16 +139,7 @@ const updateGame = async (req: Request, res: Response) => {
       throw new Error('Failed to update game');
     }
 
-    const gameDTO: IGame = {
-      id: updatedGame._id as unknown as string,
-      code: updatedGame.code,
-      creatorId: updatedGame.creatorId as unknown as string,
-      players: updatedGame.players as unknown as string[],
-      maxPlayerLimit: updatedGame.maxPlayerLimit,
-      quizes: updatedGame.quizes as unknown as IQuiz[],
-    };
-
-    return res.status(200).json(gameDTO);
+    return res.status(200).json(gameDTO(updatedGame));
   } catch (error) {
     return res.status(500).json({
       error: 'Failed to update game due to a server issue',

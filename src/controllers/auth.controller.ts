@@ -6,8 +6,9 @@ import {
   userService,
   validationService,
 } from '../services';
-import { IUser, IUserType } from '../types';
+import { IUserType } from '../types';
 import { gameConfig } from '../configs';
+import { userDTO } from '../dtos';
 
 const register = async (req: Request, res: Response) => {
   const userType: IUserType = req.body.type;
@@ -58,24 +59,19 @@ const register = async (req: Request, res: Response) => {
       throw new Error('Unable to register user due to database issue');
     }
 
-    const userDTO: IUser = {
-      id: createdUser._id as unknown as string,
-      username: createdUser.username,
-      code: createdUser.code,
-      type: createdUser.type,
-    };
+    
 
     if (userType === 'player') {
       await gameService.addPlayerToGameWithCode(
-        userDTO.code as string,
-        userDTO.id
+        userDTO(createdUser).code as string,
+        userDTO(createdUser).id
       );
     }
 
-    const token = await authService.encodeJWT(userDTO);
+    const token = await authService.encodeJWT(userDTO(createdUser));
 
     return res.status(201).json({
-      user: userDTO,
+      user: userDTO(createdUser),
       token,
     });
   } catch (error: any) {
@@ -121,16 +117,12 @@ const login = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Invalid Password', status: 400 });
     }
 
-    const userDTO: IUser = {
-      id: user._id as unknown as string,
-      username: user.username,
-      type: user.type,
-    };
+   
 
-    const token = await authService.encodeJWT(userDTO);
+    const token = await authService.encodeJWT(userDTO(user));
 
     return res.status(200).json({
-      user: userDTO,
+      user: userDTO(user),
       token,
     });
   } catch (error: any) {
