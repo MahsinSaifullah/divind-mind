@@ -51,6 +51,19 @@ const addQuizToGame = async (id: string, quiz: IQuiz) =>
     { new: true }
   );
 
+const updateQuiz = async (gameId: string, quizId: string, updatedQuiz: IQuiz) =>
+  await gameModel.findOneAndUpdate(
+    { _id: gameId, 'quizes._id': quizId },
+    {
+      $set: {
+        'quizes.$._id': quizId,
+        ...(updatedQuiz.title && { 'quizes.$.title': updatedQuiz.title }),
+        ...(updatedQuiz.questions && { 'quizes.$.questions': updatedQuiz.questions }),
+      },
+    },
+    { new: true }
+  );
+
 const deleteGame = async (id: string) => await gameModel.findByIdAndDelete(id);
 
 export const gameService = {
@@ -64,5 +77,6 @@ export const gameService = {
   updateGame,
   addPlayerToGameWithCode,
   addQuizToGame,
+  updateQuiz,
   deleteGame,
 };

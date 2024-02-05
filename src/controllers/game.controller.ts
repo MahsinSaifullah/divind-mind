@@ -110,7 +110,7 @@ const getAllPlayersOfGame = async (req: Request, res: Response) => {
 
 const updateGame = async (req: Request, res: Response) => {
   try {
-    const { code, maxPlayerLimit } = req.body;
+    const { code, maxPlayerLimit, quizes } = req.body;
     const gameTobeUpdated = await gameService.getGameById(req.params.id);
 
     if (!gameTobeUpdated) {
@@ -133,6 +133,13 @@ const updateGame = async (req: Request, res: Response) => {
       });
     }
 
+    if(quizes) {
+      return res.status(400).json({
+        error: 'Cannot update quiz with this endpoint',
+        status: 400,
+      });
+    }
+
     const updatedGame = await gameService.updateGame(req.params.id, req.body);
 
     if (!updatedGame) {
@@ -141,6 +148,34 @@ const updateGame = async (req: Request, res: Response) => {
 
     return res.status(200).json(gameDTO(updatedGame));
   } catch (error) {
+    return res.status(500).json({
+      error: 'Failed to update game due to a server issue',
+      status: 500,
+    });
+  }
+};
+
+const updateQuiz = async (req: Request, res: Response) => {
+  try {
+    if (!(await gameService.getGameById(req.params.id))) {
+      return res.status(404).json({
+        error: 'There is no game with that id',
+        status: 404,
+      });
+    }
+
+    const updatedGame = await gameService.updateQuiz(
+      req.params.id,
+      req.params.quizId,
+      req.body
+    );
+    if (!updatedGame) {
+      throw new Error('Failed to update game');
+    }
+
+    return res.status(200).json(gameDTO(updatedGame));
+  } catch (error) {
+    console.log(error)
     return res.status(500).json({
       error: 'Failed to update game due to a server issue',
       status: 500,
@@ -180,5 +215,6 @@ export const gameController = {
   getAllPlayersOfGame,
   addQuizToGame,
   updateGame,
+  updateQuiz,
   deleteGame,
 };

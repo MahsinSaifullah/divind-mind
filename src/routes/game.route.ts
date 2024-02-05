@@ -10,6 +10,7 @@ gameRouter.get('/:id/player', middleware.auth('creator'), gameController.getAllP
 gameRouter.post('/', middleware.auth('creator'), gameController.createNewGame);
 gameRouter.post('/:id/quiz', middleware.auth('creator'), gameController.addQuizToGame);
 gameRouter.patch('/:id', middleware.auth('creator'), gameController.updateGame)
+gameRouter.patch('/:id/quiz/:quizId', middleware.auth('creator'), gameController.updateQuiz);
 gameRouter.delete('/:id', middleware.auth('creator'), gameController.deleteGame)
 
 
