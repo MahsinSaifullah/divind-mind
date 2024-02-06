@@ -1,5 +1,5 @@
-const startGame = (code: string) => {
-  console.log(`Game has started with code: ${code}`);
+const startGame = (socketId: string, code: string) => {
+  console.log(`User with id: ${socketId} has started the game with code: ${code}`);
 };
 
 export const gameHandler = {

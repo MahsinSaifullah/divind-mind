@@ -24,9 +24,9 @@ export const websocketServer = (
     },
   });
 
-  io.on('connection', (socket) => {
+  io.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents, object, SocketData>) => {
     console.log('A User is connected');
 
-    socket.on('startGame', gameHandler.startGame);
+    socket.on('startGame', (code) => gameHandler.startGame(socket.id, code));
   });
 };
