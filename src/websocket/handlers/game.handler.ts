@@ -35,9 +35,14 @@ const sendAnswer = (socket: CustomSocket, answer: string) => {
   socket.to('creator-room').emit('sendAnswer', socket.data.user, answer);
 };
 
+const timeOut = (socket: CustomSocket) => {
+  socket.to(socket.data.code).emit('timeOut');
+};
+
 export const gameHandler = {
   startQuiz,
   joinGame,
   startQuestion,
   sendAnswer,
+  timeOut,
 };
