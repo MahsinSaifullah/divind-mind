@@ -49,6 +49,11 @@ export const websocketServer = (
         SocketData
       >
     ) => {
+
+      if(socket.data.user.type === 'creator'){
+        socket.join('creator-room')
+      }
+
       socket.on('startQuiz', (code, quizTitle) =>
         gameHandler.startQuiz(socket, code, quizTitle)
       );

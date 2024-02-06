@@ -32,7 +32,7 @@ const sendAnswer = (socket: CustomSocket, answer: string) => {
     return;
   }
 
-  socket.to(socket.data.user.code).emit('sendAnswer', socket.data.user, answer);
+  socket.to('creator-room').emit('sendAnswer', socket.data.user, answer);
 };
 
 export const gameHandler = {
