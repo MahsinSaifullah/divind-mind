@@ -67,6 +67,9 @@ export const websocketServer = (
       socket.on('timeOut', () =>
         gameHandler.timeOut(socket)
       );
+      socket.on('endQuiz', () =>
+        gameHandler.endQuiz(socket)
+      );
     }
   );
 };

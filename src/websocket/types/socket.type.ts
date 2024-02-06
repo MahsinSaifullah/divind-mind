@@ -7,6 +7,7 @@ export interface ServerToClientEvents {
   sendQuestion: (question: IModifiedQuestion) => void;
   sendAnswer: (user: IUser, answer: string) => void; 
   timeOut: () => void;
+  quizEnded: () => void;
 }
 
 export interface ClientToServerEvents {
@@ -15,6 +16,7 @@ export interface ClientToServerEvents {
   startQuestion: (question: IQuestion) => void;
   sendAnswer: (answer: string) => void;
   timeOut: () => void;
+  endQuiz: () => void;
 }
 
 export interface SocketData {

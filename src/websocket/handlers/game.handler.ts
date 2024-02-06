@@ -39,10 +39,15 @@ const timeOut = (socket: CustomSocket) => {
   socket.to(socket.data.code).emit('timeOut');
 };
 
+const endQuiz = (socket: CustomSocket) => {
+  socket.to(socket.data.code).emit('quizEnded');
+};
+
 export const gameHandler = {
   startQuiz,
   joinGame,
   startQuestion,
   sendAnswer,
   timeOut,
+  endQuiz
 };
