@@ -21,12 +21,14 @@ app.use(express.json());
 app.use('/auth', authRouter);
 app.use('/game', gameRouter);
 
-
-const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
+const server = app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}...`)
+);
 
 // init websocket
-websocketServer(server)
+websocketServer(server);
 
+// init database
 mongoose.Promise = Promise;
 mongoose
   .connect(environmentConfig.mongoUri as string)
