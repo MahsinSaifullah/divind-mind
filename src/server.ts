@@ -1,14 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import http from 'http'
 
 import { authRouter, gameRouter } from './routes';
 import { environmentConfig } from './configs';
+import { websocketServer } from './websocket';
 
 const app = express();
 const PORT = environmentConfig.port || 5000;
 
+//middlewares
 app.use(
   cors({
     origin: '*',
@@ -16,12 +17,15 @@ app.use(
 );
 app.use(express.json());
 
+// Routes
 app.use('/auth', authRouter);
 app.use('/game', gameRouter);
 
-export const server = new http.Server(app)
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
+const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
+
+// init websocket
+websocketServer(server)
 
 mongoose.Promise = Promise;
 mongoose

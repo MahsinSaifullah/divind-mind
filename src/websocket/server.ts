@@ -1,12 +1,16 @@
-import { Server } from 'socket.io';
-import { server } from '../server';
+import { IncomingMessage, Server, ServerResponse } from 'http';
+import { Server as SocketIOServer } from 'socket.io';
 
-const io = new Server(server, {
-  cors: {
-    origin: '*',
-  },
-});
+export const websocketServer = (
+  server: Server<typeof IncomingMessage, typeof ServerResponse>
+) => {
+  const io = new SocketIOServer(server, {
+    cors: {
+      origin: '*',
+    },
+  });
 
-io.on('Connection', (socket) => {
-    console.log('A User is connected')
-})
+  io.on('connection', (socket) => {
+    console.log('A User is connected');
+  });
+};
