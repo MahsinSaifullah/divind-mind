@@ -1,8 +1,13 @@
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { gameHandler } from './handlers';
-import { ClientToServerEvents, ServerToClientEvents, SocketData } from './types';
-
+import {
+  ClientToServerEvents,
+  ServerToClientEvents,
+  SocketData,
+} from './types';
+import { authService } from '../services';
+import { IUser } from '../types';
 
 export const websocketServer = (
   server: Server<typeof IncomingMessage, typeof ServerResponse>
@@ -18,10 +23,42 @@ export const websocketServer = (
     },
   });
 
-  io.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents, object, SocketData>) => {
-    console.log('A User is connected');
+  io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
 
-    socket.on('startQuiz', (code, quizTitle) => gameHandler.startQuiz(socket, code, quizTitle));
-    socket.on('joinGame', (code) => gameHandler.joinGame(socket, code));
+    try {
+      const user = authService.decodeJWT(token) as IUser;
+
+      if (!user) {
+        throw new Error();
+      }
+      socket.data.user = user;
+    } catch (error) {
+      return next(new Error('Invalid authentication credentials.'));
+    }
+    return next();
   });
+
+  io.on(
+    'connection',
+    (
+      socket: Socket<
+        ClientToServerEvents,
+        ServerToClientEvents,
+        object,
+        SocketData
+      >
+    ) => {
+      socket.on('startQuiz', (code, quizTitle) =>
+        gameHandler.startQuiz(socket, code, quizTitle)
+      );
+      socket.on('joinGame', () => gameHandler.joinGame(socket));
+      socket.on('startQuestion', (question) =>
+        gameHandler.startQuestion(socket, question)
+      );
+      socket.on('sendAnswer', (answer) =>
+        gameHandler.sendAnswer(socket, answer)
+      );
+    }
+  );
 };

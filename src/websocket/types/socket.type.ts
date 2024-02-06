@@ -1,17 +1,23 @@
 import { Socket } from 'socket.io';
-import { IQuiz } from '../../types';
+import { IQuestion, IUser } from '../../types';
+import { IModifiedQuestion } from './game.type';
 
 export interface ServerToClientEvents {
   quizStarted: (message: string) => void;
+  sendQuestion: (question: IModifiedQuestion) => void;
+  sendAnswer: (user: IUser, answer: string) => void; 
 }
 
 export interface ClientToServerEvents {
   startQuiz: (code: string, quizTitle: string) => void;
-  joinGame: (code: string) => void;
+  joinGame: (user: IUser) => void;
+  startQuestion: (question: IQuestion) => void;
+  sendAnswer: (answer: string) => void;
 }
 
 export interface SocketData {
   code: string;
+  user: IUser;
 }
 
 export type CustomSocket = Socket<
