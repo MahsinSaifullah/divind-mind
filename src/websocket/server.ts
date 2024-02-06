@@ -33,10 +33,10 @@ export const websocketServer = (
         throw new Error();
       }
       socket.data.user = user;
+      return next();
     } catch (error) {
       return next(new Error('Invalid authentication credentials.'));
     }
-    return next();
   });
 
   io.on(
@@ -49,9 +49,8 @@ export const websocketServer = (
         SocketData
       >
     ) => {
-
-      if(socket.data.user.type === 'creator'){
-        socket.join('creator-room')
+      if (socket.data.user.type === 'creator') {
+        socket.join('creator-room');
       }
 
       socket.on('startQuiz', (code, quizTitle) =>
@@ -64,12 +63,8 @@ export const websocketServer = (
       socket.on('sendAnswer', (answer) =>
         gameHandler.sendAnswer(socket, answer)
       );
-      socket.on('timeOut', () =>
-        gameHandler.timeOut(socket)
-      );
-      socket.on('endQuiz', () =>
-        gameHandler.endQuiz(socket)
-      );
+      socket.on('timeOut', () => gameHandler.timeOut(socket));
+      socket.on('endQuiz', () => gameHandler.endQuiz(socket));
     }
   );
 };
