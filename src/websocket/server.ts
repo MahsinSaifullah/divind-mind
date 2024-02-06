@@ -1,14 +1,8 @@
 import { IncomingMessage, Server, ServerResponse } from 'http';
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { gameHandler } from './handlers';
+import { ClientToServerEvents, ServerToClientEvents, SocketData } from './types';
 
-interface ServerToClientEvents {}
-
-interface ClientToServerEvents {
-  startGame: (code: string) => void;
-}
-
-interface SocketData {}
 
 export const websocketServer = (
   server: Server<typeof IncomingMessage, typeof ServerResponse>
@@ -27,6 +21,7 @@ export const websocketServer = (
   io.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents, object, SocketData>) => {
     console.log('A User is connected');
 
-    socket.on('startGame', (code) => gameHandler.startGame(socket.id, code));
+    socket.on('startQuiz', (code, quizTitle) => gameHandler.startQuiz(socket, code, quizTitle));
+    socket.on('joinGame', (code) => gameHandler.joinGame(socket, code));
   });
 };
