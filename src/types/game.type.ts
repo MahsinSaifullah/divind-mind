@@ -11,6 +11,7 @@ export interface IQuestion {
 export interface IQuiz {
   id: string;
   title: string;
+  timeLimit: number;
   questions: IQuestion[];
 }
 

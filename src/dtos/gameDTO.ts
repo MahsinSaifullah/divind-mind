@@ -15,6 +15,7 @@ export const gameDTO = (
         }
     )._id as unknown as string,
     title: quiz.title,
+    timeLimit: quiz.timeLimit,
     questions: quiz.questions as unknown as IQuestion[],
   }));
 
