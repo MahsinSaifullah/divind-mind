@@ -1,6 +1,5 @@
-import { IQuestion, IUser } from '../../types';
+import { IAnswer, IQuestion } from '../../types';
 import { CustomSocket } from '../types';
-import { IModifiedQuestion } from '../types';
 
 const startQuiz = (socket: CustomSocket, code: string, quizTitle: string) => {
   socket.data.code = code;
@@ -19,15 +18,10 @@ const joinGame = (socket: CustomSocket) => {
 };
 
 const startQuestion = (socket: CustomSocket, question: IQuestion) => {
-  const questionToSend: IModifiedQuestion = {
-    question: question.question,
-    answers: question.answers.map((answer) => answer.answer),
-  };
-
-  socket.to(socket.data.code).emit('sendQuestion', questionToSend);
+  socket.to(socket.data.code).emit('sendQuestion', question);
 };
 
-const sendAnswer = (socket: CustomSocket, answer: string) => {
+const sendAnswer = (socket: CustomSocket, answer: IAnswer) => {
   if (!socket.data.user.code) {
     return;
   }
@@ -49,5 +43,5 @@ export const gameHandler = {
   startQuestion,
   sendAnswer,
   timeOut,
-  endQuiz
+  endQuiz,
 };

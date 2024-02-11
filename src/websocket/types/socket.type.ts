@@ -1,11 +1,10 @@
 import { Socket } from 'socket.io';
-import { IQuestion, IUser } from '../../types';
-import { IModifiedQuestion } from './game.type';
+import { IAnswer, IQuestion, IUser } from '../../types';
 
 export interface ServerToClientEvents {
   quizStarted: (message: string) => void;
-  sendQuestion: (question: IModifiedQuestion) => void;
-  sendAnswer: (user: IUser, answer: string) => void; 
+  sendQuestion: (question: IQuestion) => void;
+  sendAnswer: (user: IUser, answer: IAnswer) => void;
   timeOut: () => void;
   quizEnded: () => void;
 }
