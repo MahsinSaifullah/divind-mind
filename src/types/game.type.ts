@@ -12,6 +12,7 @@ export interface IQuiz {
   id: string;
   title: string;
   timeLimit: number;
+  scorePerQuestion: number;
   questions: IQuestion[];
 }
 

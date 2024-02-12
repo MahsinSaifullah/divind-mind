@@ -16,6 +16,7 @@ const questionSchema = new mongoose.Schema<IQuestion>({
 const quizSchema = new mongoose.Schema<IQuiz>({
   title: { type: String, required: true },
   timeLimit: { type: Number, default: gameConfig.defaultTimeLimit },
+  scorePerQuestion: { type: Number, default: gameConfig.defaultScorePerQuestion },
   questions: [questionSchema],
 });
 
