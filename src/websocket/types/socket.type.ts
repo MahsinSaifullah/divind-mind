@@ -13,7 +13,7 @@ export interface ClientToServerEvents {
   startQuiz: (code: string, quizTitle: string) => void;
   joinGame: (user: IUser) => void;
   startQuestion: (question: IQuestion) => void;
-  sendAnswer: (answer: string) => void;
+  sendAnswer: (answer: IAnswer) => void;
   timeOut: () => void;
   endQuiz: () => void;
 }
